@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { formatDate } from "@/components/format-date";
 import { formatDuration } from "@/components/format-duration";
 import { H1 } from "@/components/Heading";
@@ -17,11 +19,13 @@ export default function ArticleCard({ article }: ArticleCardProps) {
       {article.image && (
         <div className={"border-b-4 border-b-rose-700 hover:border-b-teal-800"}>
           <div className={"overflow-hidden"}>
-            <img
-              className="h-32 max-h-full w-full max-w-full transform rounded-t-lg object-cover transition-all duration-500 ease-in-out hover:scale-110"
-              src={article.image.uri}
-              alt={article.title}
-            />
+            <Link prefetch={false} href={`/articles/${article.id}`}>
+              <img
+                className="h-32 max-h-full w-full max-w-full transform rounded-t-lg object-cover transition-all duration-500 ease-in-out hover:scale-110"
+                src={article.image.uri}
+                alt={article.title}
+              />
+            </Link>
           </div>
         </div>
       )}
@@ -37,7 +41,13 @@ export default function ArticleCard({ article }: ArticleCardProps) {
               "font-opensans font-bold text-teal-700 hover:text-teal-800 hover:decoration-4"
             }
           >
-            {article.title}
+            <Link
+              className={"hover:underline"}
+              prefetch={false}
+              href={`/articles/${article.id}`}
+            >
+              {article.title}
+            </Link>
           </H1>
           <div className={"text font-inter"}>
             <span className={"leading-3"}>{formatDate(article.date)} </span>
