@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
+import RelatedArticlesSlider from "@/app/articles/[articleId]/RelatedArticlesSlider";
 import { ArticleBanner } from "@/components/articlepage/ArticleBanner";
 import ArticleBody from "@/components/articlepage/ArticleBody";
 import CommentList from "@/components/articlepage/CommentList";
@@ -29,6 +30,9 @@ export default async function ArticlePage({ params }: Props) {
       <TwoColumnLayout
         sidebar={
           <Sidebar>
+            <SidebarBox title={"Related Articles"}>
+              <RelatedArticlesSlider />
+            </SidebarBox>
             <SidebarBox title={"Comments"}>
               <Suspense
                 fallback={
