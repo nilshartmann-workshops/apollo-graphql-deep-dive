@@ -32,9 +32,7 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`flex min-h-svh flex-col overflow-y-scroll font-inter text-teal-900 antialiased`}
       >
-        <div className={"flex items-center justify-center text-4xl"}>
-          <p>Hello Next.js Workshop 👋</p>
-        </div>
+        {children}
       </body>
     </html>
   );
