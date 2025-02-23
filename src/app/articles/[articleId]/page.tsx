@@ -9,7 +9,7 @@ import TwoColumnLayout from "@/components/layout/TwoColumnLayout";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import { Sidebar } from "@/components/Sidebar";
 import { SidebarBox } from "@/components/SidebarBox";
-import { fetchArticle } from "@/queries/queries";
+import { fetchArticle, fetchRelatedArticles } from "@/queries/queries";
 
 type Props = {
   params: Promise<{ articleId: string }>;
@@ -18,6 +18,7 @@ type Props = {
 export default async function ArticlePage({ params }: Props) {
   const { articleId } = await params;
 
+  const relatedArticlesPromise = fetchRelatedArticles(articleId);
   const article = await fetchArticle(articleId);
 
   if (!article) {
@@ -31,7 +32,13 @@ export default async function ArticlePage({ params }: Props) {
         sidebar={
           <Sidebar>
             <SidebarBox title={"Related Articles"}>
-              <RelatedArticlesSlider />
+              <Suspense
+                fallback={<LoadingIndicator>Loading...</LoadingIndicator>}
+              >
+                <RelatedArticlesSlider
+                  relatedArticlesPromise={relatedArticlesPromise}
+                />
+              </Suspense>
             </SidebarBox>
             <SidebarBox title={"Comments"}>
               <Suspense

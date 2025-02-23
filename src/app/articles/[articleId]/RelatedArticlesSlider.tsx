@@ -1,12 +1,19 @@
 "use client";
-import { useState } from "react";
+import { use, useState } from "react";
 
 import RelatedArticleBox from "@/components/articlepage/RelatedArticleBox";
-import { dummyRelatedArticles } from "@/demo-config";
+import { RelatedArticle } from "@/types";
 
-export default function RelatedArticlesSlider() {
-  // load this from server later, dont care for now...
-  const articles = dummyRelatedArticles;
+type RelatedArticlesSliderProps = {
+  relatedArticlesPromise: Promise<RelatedArticle[]>;
+};
+
+export default function RelatedArticlesSlider({
+  relatedArticlesPromise,
+}: RelatedArticlesSliderProps) {
+  // await geht hier nicht, weil wir in einer client Komponenten sind
+  // stattdessen "use" von React verwenden
+  const articles = use(relatedArticlesPromise);
 
   const [currentArticle, setCurrentArticle] = useState(0);
 
