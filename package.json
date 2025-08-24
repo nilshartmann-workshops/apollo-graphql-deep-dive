@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack -p 20000",
+    "dev": "next dev --turbopack -p 21000",
     "dev:clean": "rm -rf .next && next dev --turbopack -p 20000",
     "build": "next build",
     "build:clean": "rm -rf .next && next build",
