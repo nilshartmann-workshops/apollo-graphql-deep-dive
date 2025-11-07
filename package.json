@@ -16,7 +16,8 @@
     "graphql:codegen:watch": "graphql-codegen -w"
   },
   "dependencies": {
-    "@apollo/client": "^3.12.8",
+    "@apollo/client": "^4.0.9",
+    "@apollo/client-integration-nextjs": "^0.14.1",
     "@graphql-typed-document-node/core": "^3.2.0",
     "graphql": "^16.10.0",
     "next": "16.0.1",
