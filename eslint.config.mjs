@@ -1,4 +1,5 @@
-import { FlatCompat } from "@eslint/eslintrc";
+import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
+import nextTypescript from "eslint-config-next/typescript";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -19,29 +20,22 @@ const importRules = enableImportRules
     }
   : {};
 
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
+const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, ...compat.config({
+  plugins: ["unused-imports", "simple-import-sort", "import"],
 
-const eslintConfig = [
-  ...compat.config({
-    plugins: ["unused-imports", "simple-import-sort", "import"],
-    extends: ["next/core-web-vitals", "next/typescript"],
-    rules: {
-      "react/no-unescaped-entities": "off",
-      "react-hooks/exhaustive-deps": "off",
-      "@next/next/no-css-tags": "off",
-      "jsx-a11y/alt-text": "off",
-      "@next/next/no-img-element": "off",
-      "@typescript-eslint/no-unused-vars": "off",
-      "@typescript-eslint/ban-ts-comment": "off",
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/ban-types": "off",
-      "prefer-const": "off",
-      ...importRules,
-    },
-  }),
-  { ignores: ["*/_generated*"] },
-];
+  rules: {
+    "react/no-unescaped-entities": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "@next/next/no-css-tags": "off",
+    "jsx-a11y/alt-text": "off",
+    "@next/next/no-img-element": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/ban-types": "off",
+    "prefer-const": "off",
+    ...importRules,
+  }
+}), { ignores: ["*/_generated*"] }];
 
 export default eslintConfig;
