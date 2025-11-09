@@ -8,6 +8,7 @@ import { Suspense } from "react";
 import { GlobalLoadingIndicator } from "@/components/GlobalLoadingIndicator";
 import { SidebarBox } from "@/components/SidebarBox";
 import CommentList from "@/components/articlepage/CommentList";
+import { cacheTag, revalidateTag } from "next/cache";
 
 type Props = {
   params: Promise<{ articleId: string }>;
@@ -23,6 +24,8 @@ export default async function ArticlePage({ params }: Props) {
 
 async function loadArticle(articleId: string) {
   "use cache";
+  cacheTag("article", articleId);
+
   const { data } = await graphlQuery({
     query: ArticlePageDocument,
     variables: {
@@ -58,8 +61,23 @@ async function ArticlePageContent({ params }: Props) {
         }
       >
         <p>Requested: {article.requestedAt}</p>
+        <Update articleId={article.id} />
         <ArticleBody body={article.body} />
       </TwoColumnLayout>
     </main>
+  );
+}
+
+function Update({ articleId }: { articleId: string }) {
+  async function doUpdate() {
+    "use server";
+    console.log("update", articleId);
+    revalidateTag(articleId, "max");
+  }
+
+  return (
+    <form action={doUpdate}>
+      <button>Update {articleId}</button>
+    </form>
   );
 }
