@@ -56,6 +56,10 @@ export type G_Article = G_Node & {
   id: Scalars['ID']['output'];
   image?: Maybe<G_Image>;
   likes: Scalars['Int']['output'];
+  /** Returns the next article (ordered by date) or null */
+  nextArticle?: Maybe<G_Article>;
+  /** Returns the previous article (ordered by date) or null */
+  prevArticle?: Maybe<G_Article>;
   /**
    * Returns a list of related articles
    *

@@ -18,15 +18,21 @@ export async function fetchArticleList({
   page = 1,
   orderBy = "DATE",
 }: FetchArticleListParams = {}) {
-  const { data } = await query({
+  const result = await query({
     query: GetArticleListDocument,
     variables: {
       orderBy: getValidOrderBy(orderBy),
       page: getValidPage(page),
     },
+    errorPolicy: "all",
   });
 
-  return data.articleList;
+  if (result.error) {
+    console.error("Could not fetch article list", result.error);
+    throw result.error;
+  }
+
+  return result.data!.articleList;
 }
 
 export async function fetchArticle(
@@ -39,7 +45,7 @@ export async function fetchArticle(
     },
   });
 
-  return data.article;
+  return data!.article;
 }
 
 export async function fetchComments(articleId: string): Promise<Comment[]> {
@@ -50,7 +56,7 @@ export async function fetchComments(articleId: string): Promise<Comment[]> {
     },
   });
 
-  return data.article?.comments || [];
+  return data?.article?.comments || [];
 }
 
 export async function fetchRelatedArticles(
@@ -63,7 +69,7 @@ export async function fetchRelatedArticles(
     },
   });
 
-  return data.article?.relatedArticles || [];
+  return data?.article?.relatedArticles || [];
 }
 
 export async function mutateArticleLikes(
