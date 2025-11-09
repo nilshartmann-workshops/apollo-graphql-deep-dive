@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import TwoColumnLayout from "@/components/layout/TwoColumnLayout";
 import { ArticleBanner } from "@/components/articlepage/ArticleBanner";
 import ArticleBody from "@/components/articlepage/ArticleBody";
+import { SidebarBox } from "@/components/SidebarBox";
+import CommentList from "@/components/articlepage/CommentList";
 
 type Props = {
   params: Promise<{ articleId: string }>;
@@ -28,7 +30,15 @@ export default async function ArticlePage({ params }: Props) {
   return (
     <main>
       <ArticleBanner article={data.article} />
-      <TwoColumnLayout>
+      <TwoColumnLayout
+        sidebar={
+          <>
+            <SidebarBox title={"Comments"}>
+              <CommentList articleId={articleId} />
+            </SidebarBox>
+          </>
+        }
+      >
         <ArticleBody body={data.article.body} />
       </TwoColumnLayout>
     </main>
