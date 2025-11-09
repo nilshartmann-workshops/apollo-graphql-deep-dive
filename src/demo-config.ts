@@ -7,19 +7,19 @@ import { RelatedArticle } from "@/types";
  */
 export const delayConfig: Record<string, number> = {
   // Article-List on `/articles`
-  GetArticleList: 0,
+  ArticleList: 0,
 
   // Single Article on `/articles/[articleId]`
-  GetArticle: 0,
+  ArticlePage: 0,
 
   // Submitting the Newsletter form
   SubscribeNewsletter: 150,
 
   // Reading comments on `/articles/[articleId]`
-  GetCommentList: 0,
+  CommentList: 0,
 
   // Reading related articles on `/articles/[articleId]`,
-  GetRelatedArticles: 2000,
+  RelatedArticles: 10,
 
   // Delay the response in LikesWidget
   AddLike: 500,

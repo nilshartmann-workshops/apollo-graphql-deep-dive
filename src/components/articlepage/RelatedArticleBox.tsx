@@ -2,12 +2,17 @@ import Link from "next/link";
 
 import { ArrowButton } from "@/components/Button";
 import { H3 } from "@/components/Heading";
-import { RelatedArticle } from "@/types";
+import { LikesWidget } from "@/components/LikesWidget";
 
 type RelatedArticleBoxProps = {
   onNextClick(): void;
   onPrevClick(): void;
-  article: RelatedArticle;
+  article: {
+    title: string;
+    id: string;
+    likes: number;
+    image?: { uri: string; altText: string };
+  };
 };
 
 /**
@@ -40,6 +45,9 @@ export default function RelatedArticleBox({
           >
             <ArrowButton direction={"left"} />
           </button>
+          <div className={"absolute left-1/2 top-2 -translate-x-1/2"}>
+            <LikesWidget articleId={article.id} currentLikes={article.likes} />
+          </div>
           <div className={"absolute bottom-2 w-full"}>
             <div
               className={

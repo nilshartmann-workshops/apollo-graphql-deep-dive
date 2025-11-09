@@ -17,6 +17,7 @@ export type Scalars = {
 };
 
 export type G_AddCommentError = {
+  __typename: 'AddCommentError';
   msg: Scalars['String']['output'];
 };
 
@@ -28,10 +29,12 @@ export type G_AddCommentInput = {
 export type G_AddCommentPayload = G_AddCommentError | G_AddCommentSuccess;
 
 export type G_AddCommentSuccess = {
+  __typename: 'AddCommentSuccess';
   newComment: G_Comment;
 };
 
 export type G_AddLikeError = {
+  __typename: 'AddLikeError';
   msg: Scalars['String']['output'];
 };
 
@@ -42,10 +45,12 @@ export type G_AddLikeInput = {
 export type G_AddLikePayload = G_AddLikeError | G_AddLikeSuccess;
 
 export type G_AddLikeSuccess = {
+  __typename: 'AddLikeSuccess';
   article: G_Article;
 };
 
 export type G_Article = G_Node & {
+  __typename: 'Article';
   body: Scalars['String']['output'];
   category: G_Category;
   /**  Note: in a real GraphQL API comments would be pageable */
@@ -91,6 +96,7 @@ export type G_ArticleOrderBy =
   | 'LIKES';
 
 export type G_ArticlesResult = {
+  __typename: 'ArticlesResult';
   /** Number of the next page or empty if there is no next page */
   nextPage?: Maybe<Scalars['Int']['output']>;
   /**
@@ -128,6 +134,7 @@ export type G_ArticlesResult = {
  * - Note: this information would not be available in a real API. Here for testing only
  */
 export type G_BackendInfo = {
+  __typename: 'BackendInfo';
   commitDate: Scalars['String']['output'];
   commitId: Scalars['String']['output'];
   commitMsg?: Maybe<Scalars['String']['output']>;
@@ -139,6 +146,7 @@ export type G_Category =
   | 'TECHNOLOGY';
 
 export type G_Comment = G_Node & {
+  __typename: 'Comment';
   article: G_Article;
   id: Scalars['ID']['output'];
   requestedAt: Scalars['String']['output'];
@@ -149,15 +157,18 @@ export type G_Comment = G_Node & {
 export type G_Contact = G_EMailContact | G_PhoneContact;
 
 export type G_EMailContact = {
+  __typename: 'EMailContact';
   email: Scalars['String']['output'];
 };
 
 export type G_Image = {
+  __typename: 'Image';
   altText: Scalars['String']['output'];
   uri: Scalars['String']['output'];
 };
 
 export type G_Mutation = {
+  __typename: 'Mutation';
   addComment: G_AddCommentPayload;
   addLike: G_AddLikePayload;
 };
@@ -177,10 +188,12 @@ export type G_Node = {
 };
 
 export type G_PhoneContact = {
+  __typename: 'PhoneContact';
   phone: Scalars['String']['output'];
 };
 
 export type G_Query = {
+  __typename: 'Query';
   /**
    * Returns the `Article` with the given `articleId`.
    *
@@ -196,10 +209,17 @@ export type G_Query = {
    * - for testing, would not be part of a real application
    */
   backendInfo: G_BackendInfo;
+  /**
+   * Returns the comments for the specified `Article` or an empty list.
+   *
+   * - An empty list is also returned if there is no
+   */
   comments: Array<G_Comment>;
   /** For testing the API, returns a simple string */
   hello: Scalars['String']['output'];
   node?: Maybe<G_Node>;
+  /** Returns the _related articles_ for the specified article or an empty list */
+  relatedArticles: Array<G_Article>;
   /** Returns a unique string for each request (for testing) */
   uuid: Scalars['String']['output'];
   /** Return all registered `Writers` */
@@ -228,7 +248,14 @@ export type G_QueryNodeArgs = {
   id: Scalars['ID']['input'];
 };
 
+
+export type G_QueryRelatedArticlesArgs = {
+  articleId: Scalars['ID']['input'];
+  includeSelf?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
 export type G_Writer = G_Node & {
+  __typename: 'Writer';
   contact?: Maybe<G_Contact>;
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
@@ -241,6 +268,7 @@ export type G_ArticlePageVariables = Exact<{
 
 export type G_ArticlePage = {
   article?: {
+    __typename: 'Article',
     id: string,
     requestedAt: string,
     title: string,
@@ -250,10 +278,12 @@ export type G_ArticlePage = {
     likes: number,
     body: string,
     image?: {
+      __typename: 'Image',
       uri: string,
       altText: string
     },
     writer: {
+      __typename: 'Writer',
       name: string
     }
   }
@@ -264,8 +294,10 @@ export type G_ArticleListVariables = Exact<{ [key: string]: never; }>;
 
 export type G_ArticleList = {
   articleList: {
+    __typename: 'ArticlesResult',
     totalPages: number,
     articles: Array<{
+      __typename: 'Article',
       id: string,
       title: string,
       excerpt: string,
@@ -273,6 +305,7 @@ export type G_ArticleList = {
       category: G_Category,
       likes: number,
       image?: {
+        __typename: 'Image',
         uri: string,
         altText: string
       }
@@ -287,6 +320,7 @@ export type G_CommentListVariables = Exact<{
 
 export type G_CommentList = {
   comments: Array<{
+    __typename: 'Comment',
     requestedAt: string,
     id: string,
     text: string,
@@ -294,7 +328,46 @@ export type G_CommentList = {
   }>
 };
 
+export type G_RelatedArticlesVariables = Exact<{
+  articleId: Scalars['ID']['input'];
+}>;
+
+
+export type G_RelatedArticles = {
+  relatedArticles: Array<{
+    __typename: 'Article',
+    title: string,
+    id: string,
+    likes: number,
+    image?: {
+      __typename: 'Image',
+      uri: string,
+      altText: string
+    }
+  }>
+};
+
+export type G_AddLikeVariables = Exact<{
+  articleId: Scalars['ID']['input'];
+}>;
+
+
+export type G_AddLike = {
+  addLike: {
+    __typename: 'AddLikeError',
+    msg: string
+  } | {
+    __typename: 'AddLikeSuccess',
+    article: {
+      __typename: 'Article',
+      likes: number
+    }
+  }
+};
+
 
 export const ArticlePageDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ArticlePage"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"articleId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"article"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"articleId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"articleId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"requestedAt"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"excerpt"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"maxLength"},"value":{"kind":"IntValue","value":"120"}}]},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"category"}},{"kind":"Field","name":{"kind":"Name","value":"likes"}},{"kind":"Field","name":{"kind":"Name","value":"body"}},{"kind":"Field","name":{"kind":"Name","value":"image"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uri"}},{"kind":"Field","name":{"kind":"Name","value":"altText"}}]}},{"kind":"Field","name":{"kind":"Name","value":"writer"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<G_ArticlePage, G_ArticlePageVariables>;
 export const ArticleListDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"ArticleList"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"articleList"},"name":{"kind":"Name","value":"articles"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pageSize"},"value":{"kind":"IntValue","value":"6"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"totalPages"}},{"kind":"Field","alias":{"kind":"Name","value":"articles"},"name":{"kind":"Name","value":"results"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"excerpt"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"maxLength"},"value":{"kind":"IntValue","value":"150"}}]},{"kind":"Field","name":{"kind":"Name","value":"date"}},{"kind":"Field","name":{"kind":"Name","value":"category"}},{"kind":"Field","name":{"kind":"Name","value":"likes"}},{"kind":"Field","name":{"kind":"Name","value":"image"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uri"}},{"kind":"Field","name":{"kind":"Name","value":"altText"}}]}}]}}]}}]}}]} as unknown as DocumentNode<G_ArticleList, G_ArticleListVariables>;
 export const CommentListDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"CommentList"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"articleId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"comments"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"articleId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"articleId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"requestedAt"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"text"}},{"kind":"Field","name":{"kind":"Name","value":"writer"}}]}}]}}]} as unknown as DocumentNode<G_CommentList, G_CommentListVariables>;
+export const RelatedArticlesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"RelatedArticles"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"articleId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"relatedArticles"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"articleId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"articleId"}}},{"kind":"Argument","name":{"kind":"Name","value":"includeSelf"},"value":{"kind":"BooleanValue","value":true}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"likes"}},{"kind":"Field","name":{"kind":"Name","value":"image"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uri"}},{"kind":"Field","name":{"kind":"Name","value":"altText"}}]}}]}}]}}]} as unknown as DocumentNode<G_RelatedArticles, G_RelatedArticlesVariables>;
+export const AddLikeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"AddLike"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"articleId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"addLike"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"articleId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"articleId"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"AddLikeSuccess"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"article"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"likes"}}]}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"AddLikeError"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"msg"}}]}}]}}]}}]} as unknown as DocumentNode<G_AddLike, G_AddLikeVariables>;

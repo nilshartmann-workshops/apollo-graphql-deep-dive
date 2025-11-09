@@ -9,6 +9,7 @@ import { revalidateTag } from "next/cache";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import { SidebarBox } from "@/components/SidebarBox";
 import CommentList from "@/components/articlepage/CommentList";
+import RelatedArticlesSlider from "@/components/articlepage/RelatedArticlesSlider";
 
 type Props = {
   params: Promise<{ articleId: string }>;
@@ -53,15 +54,24 @@ async function AP({ params }: Props) {
 
   return (
     <main>
-      <p>{article.requestedAt}</p>
       <ArticleBanner article={article} />
+      <p>{article.requestedAt}</p>
       <TwoColumnLayout
         sidebar={
-          <SidebarBox title={"Comments"}>
-            <Suspense fallback={<LoadingIndicator />}>
-              <CommentList articleId={articleId} />
-            </Suspense>
-          </SidebarBox>
+          <>
+            <SidebarBox title={"Read more"}>
+              {/* evtl. spontanes Beispiel: dieses Ding kann man per Click ein- und ausschalten
+              wir laden aber mit PReload die Daten schon vor */}
+              <Suspense fallback={<LoadingIndicator />}>
+                <RelatedArticlesSlider articleId={articleId} />
+              </Suspense>
+            </SidebarBox>
+            <SidebarBox title={"Comments"}>
+              <Suspense fallback={<LoadingIndicator />}>
+                <CommentList articleId={articleId} />
+              </Suspense>
+            </SidebarBox>
+          </>
         }
       >
         <ArticleBody body={article.body} />

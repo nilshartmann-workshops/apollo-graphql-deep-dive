@@ -18,6 +18,7 @@ const COMMENT_LIST_QUERY = gql`
 `;
 
 export default async function CommentList({ articleId }: CommentListProps) {
+  // 🕵️‍♂️ Apollo Client Cache im Browser angucken!
   const result = await graphlQuery({
     query: CommentListDocument,
     variables: { articleId },

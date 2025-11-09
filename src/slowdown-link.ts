@@ -2,9 +2,13 @@
 import { SetContextLink } from "@apollo/client/link/context";
 import { delayConfig } from "@/demo-config";
 
-export const slowdownLink = new SetContextLink(
-  (currentContext, { operationName, variables }) => {
-    console.log("Executing GraphQL operation", operationName, variables);
+export function createSlowdownLink(label: string) {
+  return new SetContextLink((currentContext, { operationName, variables }) => {
+    console.log(
+      `[${label}] Executing GraphQL operation`,
+      operationName,
+      variables,
+    );
     if (!operationName) {
       return currentContext;
     }
@@ -14,7 +18,11 @@ export const slowdownLink = new SetContextLink(
       return currentContext;
     }
 
-    console.info("Slowdown GraphQL operation", operationName, slowdown + "ms");
+    console.info(
+      `[${label}] Slowdown GraphQL operation`,
+      operationName,
+      slowdown + "ms",
+    );
 
     return {
       ...currentContext,
@@ -23,5 +31,5 @@ export const slowdownLink = new SetContextLink(
         slowdown,
       },
     };
-  },
-);
+  });
+}

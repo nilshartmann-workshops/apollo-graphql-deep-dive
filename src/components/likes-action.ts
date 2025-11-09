@@ -1,43 +1,39 @@
 "use server";
 
+import gql from "graphql-tag";
+import { AddLikeDocument } from "@/_generated-graphql-types";
+import { getApolloRscClient } from "@/graphql-client";
 import { revalidatePath } from "next/cache";
 
-type LikesActionState = {
-  likes: number;
-};
+const ADD_LIKE_MUTATION = gql`
+  mutation AddLike($articleId: ID!) {
+    addLike(input: { articleId: $articleId }) {
+      ... on AddLikeSuccess {
+        article {
+          likes
+        }
+      }
+      ... on AddLikeError {
+        msg
+      }
+    }
+  }
+`;
 
-export default async function saveLikeAction(
-  state: LikesActionState,
-  formData: FormData,
-): Promise<LikesActionState> {
-  // console.log("saveLike mit state aufgerufen", state);
-  //
-  // // im "echten" Leben sollten die Form-Parameter natürlich validiert
-  // // werden, da sie vom Client und damit aus nicht vertrauenswürdiger Quelle
-  // // stammen
-  // const articleId = formData.get("articleId");
-  // if (!(typeof articleId === "string")) {
-  //   console.error("Invalid article id", articleId);
-  //   return state;
-  // }
-  //
-  // const newLikes = await mutateArticleLikes(articleId);
-  //
-  // if (newLikes === null) {
-  //   // Fehler, Like konnte nicht gespeichert werden
-  //   //  Original-Zustand zurückliefern
-  //   //
-  //   // Im echten Leben könnte man hier auch eine Fehlermeldung zurückliefern
-  //   return state;
-  // }
-  //
-  // // Effekt sieht man nur in der gebauten Anwendung!
-  // //  (pnpm build && pnpm start)
-  // revalidatePath("/articles");
-  // // eigentlich nicht notwendig, da Einzeldarstellung dynamische Route ist
-  // revalidatePath(`/articles/${articleId}`);
+export default async function saveLikeServerAction(articleId: string) {
+  console.log("saveLike mit articleId aufgerufen", articleId);
+  const result = await getApolloRscClient().mutate({
+    mutation: AddLikeDocument,
+    variables: { articleId },
+  });
 
-  console.log("TODO saveLikeAction in likes-action.ts");
+  if (result.data?.addLike?.__typename !== "AddLikeSuccess") {
+    return;
+  }
 
-  return state;
+  const newLikes = result.data.addLike.article.likes;
+  console.log("newLikes for article " + articleId, newLikes);
+
+  revalidatePath("/articles");
+  revalidatePath(`/articles/${articleId}`);
 }

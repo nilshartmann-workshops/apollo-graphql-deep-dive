@@ -8,7 +8,13 @@ const config: CodegenConfig = {
     "./src/_generated-graphql-types.ts": {
       config: {
         // https://the-guild.dev/graphql/codegen/plugins/typescript/typescript-operations
-        skipTypename: true,
+
+        //https://www.apollographql.com/docs/react/development-testing/graphql-codegen#recommended-starter-configuration
+        // Apollo Client always includes `__typename` fields
+        nonOptionalTypename: true,
+        // Apollo Client doesn't add the `__typename` field to root types so
+        // don't generate a type for the `__typename` for root operation types.
+        skipTypeNameForRoot: true,
         typesPrefix: "G_",
         printFieldsOnNewLines: true,
         scalars: {
