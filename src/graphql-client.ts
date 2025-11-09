@@ -1,12 +1,12 @@
 import { HttpLink } from "@apollo/client";
 import {
-  registerApolloClient,
   ApolloClient,
   InMemoryCache,
+  registerApolloClient,
 } from "@apollo/client-integration-nextjs";
 
-import { delayConfig, graphQlFetchCache } from "@/demo-config";
-import { SetContextLink } from "@apollo/client/link/context";
+import { graphQlFetchCache } from "@/demo-config";
+import { slowdownLink } from "@/slowdown-link";
 
 const fetchOptions =
   graphQlFetchCache === "force-cache"
@@ -19,33 +19,11 @@ const httpLink = new HttpLink({
   fetchOptions,
 });
 
-// https://www.apollographql.com/docs/react/api/link/apollo-link-context
-const slowdownLink = new SetContextLink((currentContext, { operationName }) => {
-  console.log("GraphQL Operation", operationName);
-
-  if (!operationName) {
-    return currentContext;
-  }
-
-  const slowdown = delayConfig[operationName];
-  if (!slowdown) {
-    return currentContext;
-  }
-
-  console.info("Slowdown GraphQL operation", operationName, slowdown + "ms");
-
-  return {
-    ...currentContext,
-    headers: {
-      ...currentContext.headers,
-      slowdown,
-    },
-  };
-});
-
 // https://github.com/apollographql/apollo-client-integrations/tree/main/packages/nextjs#in-rsc
-export const { getClient, query, PreloadQuery } = registerApolloClient(() => {
+export const { query: graphlQuery } = registerApolloClient(() => {
+  console.log("Registering Apollo Client for RSC execution");
   return new ApolloClient({
+    // connectToDevTools: true, // <-- does not work on SERVER (ofc)
     cache: new InMemoryCache(),
     link: slowdownLink.concat(httpLink),
   });

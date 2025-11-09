@@ -1,14 +1,12 @@
-import { fetchComments } from "@/queries/queries";
-
 type CommentListProps = {
   articleId: string;
 };
 export default async function CommentList({ articleId }: CommentListProps) {
-  const comments = await fetchComments(articleId);
+  const comments: any = [];
 
   return (
     <>
-      {comments.map((f) => {
+      {comments.map((f: any) => {
         return (
           <div
             key={f.id}

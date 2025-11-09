@@ -1,0 +1,18 @@
+query ArticleList {
+  articleList: articles(pageSize: 6) {
+    totalPages
+
+    articles: results {
+      id
+      title
+      excerpt(maxLength: 150)
+      date
+      category
+      likes
+      image {
+        uri
+        altText
+      }
+    }
+  }
+}

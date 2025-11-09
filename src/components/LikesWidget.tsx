@@ -16,8 +16,6 @@ export function LikesWidget({ articleId, currentLikes }: LikesWidgetProps) {
     likes: currentLikes,
   });
 
-  console.log("STATE", state);
-
   return (
     <form className={"inline-block"} action={action}>
       <input type={"hidden"} name="articleId" value={articleId} />

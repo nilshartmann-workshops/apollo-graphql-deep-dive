@@ -7,7 +7,15 @@ import { LikesWidget } from "@/components/LikesWidget";
 import { BaseArticle } from "@/types";
 
 type ArticleCardProps = {
-  article: BaseArticle;
+  article: {
+    id: string;
+    title: string;
+    excerpt: string;
+    date: string;
+    category: string;
+    likes: number;
+    image?: { uri: string; altText: string };
+  };
 };
 export default function ArticleCard({ article }: ArticleCardProps) {
   return (
@@ -57,13 +65,6 @@ export default function ArticleCard({ article }: ArticleCardProps) {
         </div>
         <div className={"flex flex-col"}>
           <div className={"flex items-center justify-between"}>
-            <div
-              className={
-                "rounded border border-slate-200 bg-slate-50 px-2 py-1 tracking-wide text-teal-700"
-              }
-            >
-              {formatDuration((article.wordCount / 100) * 60)}
-            </div>
             <LikesWidget articleId={article.id} currentLikes={article.likes} />
           </div>
         </div>
