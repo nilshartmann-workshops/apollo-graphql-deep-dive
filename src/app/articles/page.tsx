@@ -1,5 +1,5 @@
 import { ArticleListDocument } from "@/_generated-graphql-types";
-import ArticleCard from "@/components/ArticleCard";
+import ArticleCard, { ARTICLE_CARD_FRAGMENT } from "@/components/ArticleCard";
 import ArticleListGrid from "@/components/articlelistpage/ArticleListGrid";
 import { graphlQuery } from "@/graphql-client";
 import gql from "graphql-tag";
@@ -11,25 +11,14 @@ const ARTICLE_LIST_QUERY = gql`
   #    🤔 was spricht dafür, was dagegen?
   #       - wollen wir die generierten Typen im Code haben
   #       - was ist mit __typename
-  fragment ArticleImage on Image {
-    uri
-    altText
-  }
+  ${ARTICLE_CARD_FRAGMENT}
 
   query ArticleList {
     articleList: articles(pageSize: 6) {
       totalPages
 
       articles: results {
-        id
-        title
-        excerpt(maxLength: 150)
-        date
-        category
-        likes
-        image {
-          ...ArticleImage
-        }
+        ...ArticleCardFragment
       }
     }
   }
