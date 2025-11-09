@@ -3,6 +3,7 @@ import Link from "next/link";
 import { formatDate } from "@/components/format-date";
 import { H1 } from "@/components/Heading";
 import { LikesWidget } from "@/components/LikesWidget";
+import { G_ArticleImage } from "@/_generated-graphql-types";
 
 type ArticleCardProps = {
   article: {
@@ -12,7 +13,7 @@ type ArticleCardProps = {
     date: string;
     category: string;
     likes: number;
-    image?: { uri: string; altText: string };
+    image?: G_ArticleImage;
   };
 };
 export default function ArticleCard({ article }: ArticleCardProps) {
@@ -68,7 +69,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
 }
 
 type ArticleCardImageProps = {
-  image?: { uri: string; altText: string };
+  image?: G_ArticleImage;
 };
 function ArticleCardImage({ image }: ArticleCardImageProps) {
   if (!image) {

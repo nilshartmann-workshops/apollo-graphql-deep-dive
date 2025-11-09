@@ -5,6 +5,17 @@ import { graphlQuery } from "@/graphql-client";
 import gql from "graphql-tag";
 
 const ARTICLE_LIST_QUERY = gql`
+  # Nur ein Beispiel
+  # -> Generierten Code zeigen
+  #    den Typ könnten wir in ArticleCard und ArticleCardImage verwenden
+  #    🤔 was spricht dafür, was dagegen?
+  #       - wollen wir die generierten Typen im Code haben
+  #       - was ist mit __typename
+  fragment ArticleImage on Image {
+    uri
+    altText
+  }
+
   query ArticleList {
     articleList: articles(pageSize: 6) {
       totalPages
@@ -17,8 +28,7 @@ const ARTICLE_LIST_QUERY = gql`
         category
         likes
         image {
-          uri
-          altText
+          ...ArticleImage
         }
       }
     }
