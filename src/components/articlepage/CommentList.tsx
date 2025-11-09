@@ -1,12 +1,8 @@
-import gql from "graphql-tag";
-import { graphlQuery } from "@/graphql-client";
-import { CommentListDocument } from "@/_generated-graphql-types";
-
 type CommentListProps = {
   articleId: string;
 };
 
-const COMMENT_LIST_QUERY = gql`
+const COMMENT_LIST_QUERY = `
   query CommentList($articleId: ID!) {
     comments(articleId: $articleId) {
       requestedAt
@@ -18,17 +14,20 @@ const COMMENT_LIST_QUERY = gql`
 `;
 
 export default async function CommentList({ articleId }: CommentListProps) {
-  // 🕵️‍♂️ Apollo Client Cache im Browser angucken!
-  const result = await graphlQuery({
-    query: CommentListDocument,
-    variables: { articleId },
-  });
-
-  if (!result?.data) {
-    throw new Error("No comments");
-  }
-
-  const comments = result.data.comments;
+  // todo:
+  //  1. load comments for articleId
+  //   - the document is already defined above
+  //   - add gql tag around the document and re-run code generator
+  //  2. assign the data to 'comments'
+  //   - remove the typescript type
+  //   - assign 'comments' from your query result
+  //   - there should be no typescript errors
+  const comments: Array<{
+    id: string;
+    writer: string;
+    text: string;
+    requestedAt: string;
+  }> = [];
 
   return (
     <>

@@ -1,9 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
-
 import LikeIcon from "@/components/LikeIcon";
-import saveLikeServerAction from "@/components/likes-action";
 import { LikeIndicator } from "@/components/LoadingIndicator";
 
 type LikesWidgetProps = {
@@ -12,14 +9,14 @@ type LikesWidgetProps = {
 };
 
 export function LikesWidget({ articleId, currentLikes }: LikesWidgetProps) {
-  const [isPending, startTransition] = useTransition();
-
+  const isPending = false; // <-- replace with pending status from transition
   const handleSubmit = () => {
-    startTransition(async () => {
-      await saveLikeServerAction(articleId);
-
-      // hier müsste man jetzt noch den Client-Cache aktualisieren
-    });
+    // todo:
+    //   - create new file 'likes-action.ts' and create your server action
+    //      that runs the mutation
+    //   - create transition (useTransition)
+    //   - start transition here
+    //   - inside the transition call your server action 'saveLikeServerAction'
   };
 
   return (

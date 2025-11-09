@@ -2,17 +2,14 @@
 import { useState } from "react";
 
 import RelatedArticleBox from "@/components/articlepage/RelatedArticleBox";
-import gql from "graphql-tag";
-import { useSuspenseQuery } from "@apollo/client/react";
-import { RelatedArticlesDocument } from "@/_generated-graphql-types";
 
 type RelatedArticlesSliderProps = {
   articleId: string;
 };
 
-const RELATED_ARTICLES_QUERY = gql`
-  query RelatedArticles($articleId: ID!) {
-    relatedArticles(articleId: $articleId, includeSelf: true) {
+// todo: complete query and re-run code-generator
+const RELATED_ARTICLES_QUERY = `
+    relatedArticles(articleId: $articleId) {
       title
       id
       likes
@@ -21,23 +18,28 @@ const RELATED_ARTICLES_QUERY = gql`
         altText
       }
     }
-  }
 `;
 
 export default function RelatedArticlesSlider({
   articleId,
 }: RelatedArticlesSliderProps) {
-  const { data } = useSuspenseQuery(RelatedArticlesDocument, {
-    variables: { articleId },
-  });
+  // ACHTUNG!
+  //   - Dieses ist eine Client-Komponente
+  //     (wo/wann werden Client-Komponenten gerendert?)
+  // TODO:
+  //   - Verwende einen suspenseQuery um die "related articles" zu laden
+  //     - Dazu das Query-Dokument oben vervollständigen und
+  //       dann die geladenen Artikel in die Variable 'articles'
+  //       unten setzen
+  //       (TypeScript-Typ entfernen, der korrekte TypeScript-Typ
+  //        für 'articles' soll aus useSuspenseQuery abgeleitet werden)
 
-  if (!data?.relatedArticles) {
-    throw new Error("No related articles");
-  }
-
-  // await geht hier nicht, weil wir in einer client Komponenten sind
-  // stattdessen "use" von React verwenden
-  const articles = data.relatedArticles;
+  const articles: Array<{
+    title: string;
+    id: string;
+    likes: number;
+    image?: { uri: string; altText: string };
+  }> = [];
 
   const [currentArticle, setCurrentArticle] = useState(0);
 
