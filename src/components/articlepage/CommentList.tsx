@@ -1,12 +1,37 @@
+import gql from "graphql-tag";
+import { graphlQuery } from "@/graphql-client";
+import { CommentListDocument } from "@/_generated-graphql-types";
+
 type CommentListProps = {
   articleId: string;
 };
+
+const COMMENT_LIST_QUERY = gql`
+  query CommentList($articleId: ID!) {
+    comments(articleId: $articleId) {
+      requestedAt
+      id
+      text
+      writer
+    }
+  }
+`;
+
 export default async function CommentList({ articleId }: CommentListProps) {
-  const comments: any = [];
+  const result = await graphlQuery({
+    query: CommentListDocument,
+    variables: { articleId },
+  });
+
+  if (!result?.data) {
+    throw new Error("No comments");
+  }
+
+  const comments = result.data.comments;
 
   return (
     <>
-      {comments.map((f: any) => {
+      {comments.map((f) => {
         return (
           <div
             key={f.id}
@@ -18,6 +43,7 @@ export default async function CommentList({ articleId }: CommentListProps) {
                 <span className={"font-bold"}>{f.writer}</span> says:{" "}
                 <span className={""}>{f.text}</span>
               </div>
+              <div>Requested: {f.requestedAt}</div>
             </span>
           </div>
         );

@@ -6,6 +6,9 @@ import { Suspense } from "react";
 import { loadArticle } from "@/app/articles/[articleId]/load-article";
 import { GlobalLoadingIndicator } from "@/components/GlobalLoadingIndicator";
 import { revalidateTag } from "next/cache";
+import LoadingIndicator from "@/components/LoadingIndicator";
+import { SidebarBox } from "@/components/SidebarBox";
+import CommentList from "@/components/articlepage/CommentList";
 
 type Props = {
   params: Promise<{ articleId: string }>;
@@ -16,6 +19,7 @@ const ARTICLE_PAGE_QUERY = gql`
   query ArticlePage($articleId: ID!) {
     article(articleId: $articleId) {
       id
+      requestedAt
       title
       excerpt(maxLength: 120)
       date
@@ -49,8 +53,17 @@ async function AP({ params }: Props) {
 
   return (
     <main>
+      <p>{article.requestedAt}</p>
       <ArticleBanner article={article} />
-      <TwoColumnLayout>
+      <TwoColumnLayout
+        sidebar={
+          <SidebarBox title={"Comments"}>
+            <Suspense fallback={<LoadingIndicator />}>
+              <CommentList articleId={articleId} />
+            </Suspense>
+          </SidebarBox>
+        }
+      >
         <ArticleBody body={article.body} />
       </TwoColumnLayout>
       <Update articleId={article.id} />

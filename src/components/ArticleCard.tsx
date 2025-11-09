@@ -1,10 +1,8 @@
 import Link from "next/link";
 
 import { formatDate } from "@/components/format-date";
-import { formatDuration } from "@/components/format-duration";
 import { H1 } from "@/components/Heading";
 import { LikesWidget } from "@/components/LikesWidget";
-import { BaseArticle } from "@/types";
 
 type ArticleCardProps = {
   article: {
@@ -28,11 +26,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
         <div className={"border-b-4 border-b-rose-700 hover:border-b-teal-800"}>
           <div className={"overflow-hidden"}>
             <Link prefetch={false} href={`/articles/${article.id}`}>
-              <img
-                className="h-32 max-h-full w-full max-w-full transform rounded-t-lg object-cover transition-all duration-500 ease-in-out hover:scale-110"
-                src={article.image.uri}
-                alt={article.title}
-              />
+              <ArticleCardImage image={article.image} />
             </Link>
           </div>
         </div>
@@ -70,5 +64,21 @@ export default function ArticleCard({ article }: ArticleCardProps) {
         </div>
       </div>
     </div>
+  );
+}
+
+type ArticleCardImageProps = {
+  image?: { uri: string; altText: string };
+};
+function ArticleCardImage({ image }: ArticleCardImageProps) {
+  if (!image) {
+    return null;
+  }
+  return (
+    <img
+      className="h-32 max-h-full w-full max-w-full transform rounded-t-lg object-cover transition-all duration-500 ease-in-out hover:scale-110"
+      src={image.uri}
+      alt={image.altText}
+    />
   );
 }
