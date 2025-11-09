@@ -2,6 +2,7 @@ import ArticleCard from "@/components/ArticleCard";
 import ArticleListGrid from "@/components/articlelistpage/ArticleListGrid";
 import { graphlQuery } from "@/graphql-client";
 import { ArticleListDocument } from "@/_generated-graphql-types";
+import { Suspense } from "react";
 
 type ArticleListPageProps = {
   searchParams: Promise<Record<string, string>>;
@@ -29,6 +30,14 @@ type ArticleListPageProps = {
 // `;
 
 export default async function ArticleListPage() {
+  return (
+    <Suspense fallback={"LISTTTTTTTTTTTTTTTTTTTTTT"}>
+      <ArticleList />
+    </Suspense>
+  );
+}
+
+async function ArticleList() {
   const { data, error } = await graphlQuery({
     query: ArticleListDocument,
   });

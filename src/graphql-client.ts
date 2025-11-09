@@ -21,7 +21,7 @@ const httpLink = new HttpLink({
 
 // https://github.com/apollographql/apollo-client-integrations/tree/main/packages/nextjs#in-rsc
 export const { query: graphlQuery } = registerApolloClient(() => {
-  console.log("Registering Apollo Client for RSC execution");
+  // console.log("Registering Apollo Client for RSC execution");
   return new ApolloClient({
     // connectToDevTools: true, // <-- does not work on SERVER (ofc)
     cache: new InMemoryCache(),

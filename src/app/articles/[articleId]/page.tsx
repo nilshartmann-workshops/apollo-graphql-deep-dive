@@ -1,60 +1,73 @@
-import { notFound } from "next/navigation";
-import { Suspense } from "react";
-
-import RelatedArticlesSlider from "@/app/articles/[articleId]/RelatedArticlesSlider";
+import gql from "graphql-tag";
 import { ArticleBanner } from "@/components/articlepage/ArticleBanner";
 import ArticleBody from "@/components/articlepage/ArticleBody";
-import CommentList from "@/components/articlepage/CommentList";
 import TwoColumnLayout from "@/components/layout/TwoColumnLayout";
-import LoadingIndicator from "@/components/LoadingIndicator";
-import { Sidebar } from "@/components/Sidebar";
-import { SidebarBox } from "@/components/SidebarBox";
+import { Suspense } from "react";
+import { loadArticle } from "@/app/articles/[articleId]/load-article";
+import { GlobalLoadingIndicator } from "@/components/GlobalLoadingIndicator";
+import { revalidateTag } from "next/cache";
 
 type Props = {
   params: Promise<{ articleId: string }>;
 };
 
-export default async function ArticlePage({ params }: Props) {
-  const { articleId } = await params;
+// Beispiel 2: gql als "inline query"
+const ARTICLE_PAGE_QUERY = gql`
+  query ArticlePage($articleId: ID!) {
+    article(articleId: $articleId) {
+      id
+      title
+      excerpt(maxLength: 120)
+      date
+      category
+      likes
+      body
+      image {
+        uri
+        altText
+      }
+      writer {
+        name
+      }
+    }
+  }
+`;
 
-  return "fuck you nextjs";
-  //
-  // const relatedArticlesPromise = fetchRelatedArticles(articleId);
-  // const article = await fetchArticle(articleId);
-  //
-  // if (!article) {
-  //   return notFound();
-  // }
-  //
-  // return (
-  //   <main>
-  //     <ArticleBanner article={article} />
-  //     <TwoColumnLayout
-  //       sidebar={
-  //         <Sidebar>
-  //           <SidebarBox title={"Related Articles"}>
-  //             <Suspense
-  //               fallback={<LoadingIndicator>Loading...</LoadingIndicator>}
-  //             >
-  //               <RelatedArticlesSlider
-  //                 relatedArticlesPromise={relatedArticlesPromise}
-  //               />
-  //             </Suspense>
-  //           </SidebarBox>
-  //           <SidebarBox title={"Comments"}>
-  //             <Suspense
-  //               fallback={
-  //                 <LoadingIndicator>Loading Comments...</LoadingIndicator>
-  //               }
-  //             >
-  //               <CommentList articleId={article.id} />
-  //             </Suspense>
-  //           </SidebarBox>
-  //         </Sidebar>
-  //       }
-  //     >
-  //       <ArticleBody body={article.body} />
-  //     </TwoColumnLayout>
-  //   </main>
-  // );
+export default async function ArticlePage({ params }: Props) {
+  console.log("ArticlePage");
+  return (
+    <Suspense fallback={<GlobalLoadingIndicator />}>
+      <AP params={params} />
+    </Suspense>
+  );
+}
+
+async function AP({ params }: Props) {
+  const { articleId } = await params;
+  console.log("ArticlePage", articleId);
+  const article = await loadArticle(articleId);
+
+  return (
+    <main>
+      <ArticleBanner article={article} />
+      <TwoColumnLayout>
+        <ArticleBody body={article.body} />
+      </TwoColumnLayout>
+      <Update articleId={article.id} />
+    </main>
+  );
+}
+
+function Update({ articleId }: { articleId: string }) {
+  async function doUpdate() {
+    "use server";
+    console.log("update", articleId);
+    revalidateTag(articleId, "max");
+  }
+
+  return (
+    <form action={doUpdate}>
+      <button>Update {articleId}</button>
+    </form>
+  );
 }

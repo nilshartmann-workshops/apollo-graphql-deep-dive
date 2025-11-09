@@ -1,10 +1,19 @@
 import ArticleBannerWrapper from "@/components/articlepage/ArticleBannerWrapper";
 import { formatDate } from "@/components/format-date";
 import { LikesWidget } from "@/components/LikesWidget";
-import { Article } from "@/types";
 
 type ArticleBannerProps = {
-  article: Article;
+  article: {
+    id: string;
+    title: string;
+    date: string;
+    category: string;
+    likes: number;
+    excerpt: string;
+    image?: { uri: string; altText: string };
+    writer: { name: string };
+    body: string;
+  };
 };
 export function ArticleBanner({ article }: ArticleBannerProps) {
   return (

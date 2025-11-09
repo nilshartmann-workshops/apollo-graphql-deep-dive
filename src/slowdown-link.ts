@@ -3,7 +3,8 @@ import { SetContextLink } from "@apollo/client/link/context";
 import { delayConfig } from "@/demo-config";
 
 export const slowdownLink = new SetContextLink(
-  (currentContext, { operationName }) => {
+  (currentContext, { operationName, variables }) => {
+    console.log("Executing GraphQL operation", operationName, variables);
     if (!operationName) {
       return currentContext;
     }
