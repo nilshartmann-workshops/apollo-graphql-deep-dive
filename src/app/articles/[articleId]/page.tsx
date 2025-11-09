@@ -1,14 +1,36 @@
+import { graphlQuery } from "@/graphql-client";
+import { ArticlePageDocument } from "@/_generated-graphql-types";
+import { notFound } from "next/navigation";
+import TwoColumnLayout from "@/components/layout/TwoColumnLayout";
+import { ArticleBanner } from "@/components/articlepage/ArticleBanner";
+import ArticleBody from "@/components/articlepage/ArticleBody";
+
 type Props = {
   params: Promise<{ articleId: string }>;
 };
 
 export default async function ArticlePage({ params }: Props) {
   const { articleId } = await params;
+
   console.log("ArticlePage", articleId);
+
+  const { data } = await graphlQuery({
+    query: ArticlePageDocument,
+    variables: {
+      articleId,
+    },
+  });
+
+  if (!data?.article) {
+    throw notFound();
+  }
 
   return (
     <main>
-      <p>Todo: Render Article {articleId}</p>
+      <ArticleBanner article={data.article} />
+      <TwoColumnLayout>
+        <ArticleBody body={data.article.body} />
+      </TwoColumnLayout>
     </main>
   );
 }

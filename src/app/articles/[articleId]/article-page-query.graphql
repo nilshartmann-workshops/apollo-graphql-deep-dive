@@ -1,0 +1,18 @@
+query ArticlePage($articleId: ID!) {
+  article(articleId: $articleId) {
+    id
+    title
+    excerpt(maxLength: 120)
+    date
+    category
+    likes
+    body
+    image {
+      uri
+      altText
+    }
+    writer {
+      name
+    }
+  }
+}
