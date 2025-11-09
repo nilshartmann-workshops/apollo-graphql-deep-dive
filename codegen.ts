@@ -17,10 +17,8 @@ const config: CodegenConfig = {
         // Apollo Client doesn't add the `__typename` field to root types so
         // don't generate a type for the `__typename` for root operation types.
         skipTypeNameForRoot: true,
-        inlineFragmentTypes: "mask",
-        customDirectives: {
-          apolloUnmask: true,
-        },
+        inlineFragmentTypes: "combine",
+
         // ------------- Meine Einstellung (nicht notwendig fuer Apollo) -----------------------------
 
         typesPrefix: "G_",

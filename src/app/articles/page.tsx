@@ -4,7 +4,13 @@ import ArticleListGrid from "@/components/articlelistpage/ArticleListGrid";
 import { graphlQuery } from "@/graphql-client";
 import gql from "graphql-tag";
 
-export const ARTICLE_LIST_QUERY = gql`
+const ARTICLE_LIST_QUERY = gql`
+  # Nur ein Beispiel
+  # -> Generierten Code zeigen
+  #    den Typ könnten wir in ArticleCard und ArticleCardImage verwenden
+  #    🤔 was spricht dafür, was dagegen?
+  #       - wollen wir die generierten Typen im Code haben
+  #       - was ist mit __typename
   ${ARTICLE_CARD_FRAGMENT}
 
   query ArticleList {
@@ -12,7 +18,6 @@ export const ARTICLE_LIST_QUERY = gql`
       totalPages
 
       articles: results {
-        id
         ...ArticleCardFragment
       }
     }
@@ -37,7 +42,7 @@ export default async function ArticleListPage() {
     <div className={"ArticleListPage"}>
       <ArticleListGrid>
         {data.articleList.articles.map((a) => (
-          <ArticleCard key={a.id} articleId={a.id} />
+          <ArticleCard key={a.id} article={a} />
         ))}
       </ArticleListGrid>
     </div>
