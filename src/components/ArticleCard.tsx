@@ -8,12 +8,17 @@ import {
   G_ArticleImageFragment,
 } from "@/_generated-graphql-types";
 import gql from "graphql-tag";
+import { TypedDocumentNode } from "@graphql-typed-document-node/core";
+import { getApolloRscClient } from "@/graphql-client";
 
-export const ARTICLE_CARD_FRAGMENT = gql`
+const ARTICLE_IMAGE_FRAGMENT = gql`
   fragment ArticleImageFragment on Image {
     uri
     altText
   }
+`;
+export const ARTICLE_CARD_FRAGMENT: TypedDocumentNode<G_ArticleCardFragment> = gql`
+  ${ARTICLE_IMAGE_FRAGMENT}
 
   fragment ArticleCardFragment on Article {
     id
@@ -23,14 +28,27 @@ export const ARTICLE_CARD_FRAGMENT = gql`
     category
     likes
     image {
-      ...ArticleImageFragment
+      ...ArticleImageFragment @unmask
     }
   }
 `;
+
+// https://github.com/apollographql/apollo-client-integrations/issues/486#issuecomment-3019638244
 type ArticleCardProps = {
-  article: G_ArticleCardFragment;
+  articleId: string;
 };
-export default function ArticleCard({ article }: ArticleCardProps) {
+export default function ArticleCard({ articleId }: ArticleCardProps) {
+  // auf client seite könnten wir mit useSuspenseQuery arbeiten
+  const article = getApolloRscClient().readFragment({
+    id: `Article:${articleId}`,
+    fragment: ARTICLE_CARD_FRAGMENT,
+    fragmentName: "ArticleCardFragment", // <- nicht typsicher, ausprobieren: ArticleImageFragment
+  });
+
+  if (!article) {
+    throw new Error("no article!");
+  }
+
   return (
     <div
       className={
