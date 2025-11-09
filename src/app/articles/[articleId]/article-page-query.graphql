@@ -1,6 +1,7 @@
 query ArticlePage($articleId: ID!) {
   article(articleId: $articleId) {
     id
+    requestedAt
     title
     excerpt(maxLength: 120)
     date
