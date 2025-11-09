@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
   //   // 	| 'top-right'
   //   // 	| 'top-left', // defaults to 'bottom-right'
   // },
-  // cacheComponents: true,
+  cacheComponents: true,
 };
 
 export default nextConfig;

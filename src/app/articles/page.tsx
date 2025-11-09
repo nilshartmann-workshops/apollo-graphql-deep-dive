@@ -3,6 +3,8 @@ import ArticleCard, { ARTICLE_CARD_FRAGMENT } from "@/components/ArticleCard";
 import ArticleListGrid from "@/components/articlelistpage/ArticleListGrid";
 import { graphlQuery } from "@/graphql-client";
 import gql from "graphql-tag";
+import { Suspense } from "react";
+import { GlobalLoadingIndicator } from "@/components/GlobalLoadingIndicator";
 
 const ARTICLE_LIST_QUERY = gql`
   # Nur ein Beispiel
@@ -25,6 +27,19 @@ const ARTICLE_LIST_QUERY = gql`
 `;
 
 export default async function ArticleListPage() {
+  return (
+    <Suspense fallback={<GlobalLoadingIndicator />}>
+      <ArticleListPageContent />
+    </Suspense>
+  );
+}
+
+async function ArticleListPageContent() {
+  // mit Cached Components ist JEDE Seite dynamisch
+  // ansonsten wäre das eine statische Route hier
+  // deswegen Cache einschalten!
+  "use cache";
+  console.log("Rendering ArticleListPageContent");
   const { data, error } = await graphlQuery({
     query: ArticleListDocument,
   });
