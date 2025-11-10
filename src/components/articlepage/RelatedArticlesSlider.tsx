@@ -2,13 +2,17 @@
 import { useState } from "react";
 
 import RelatedArticleBox from "@/components/articlepage/RelatedArticleBox";
+import gql from "graphql-tag";
+import { useSuspenseQuery } from "@apollo/client/react";
+import { RelatedArticlesDocument } from "@/_generated-graphql-types";
 
 type RelatedArticlesSliderProps = {
   articleId: string;
 };
 
 // todo: complete query and re-run code-generator
-const RELATED_ARTICLES_QUERY = `
+const RELATED_ARTICLES_QUERY = gql`
+  query RelatedArticles($articleId: ID!) {
     relatedArticles(articleId: $articleId) {
       title
       id
@@ -18,6 +22,7 @@ const RELATED_ARTICLES_QUERY = `
         altText
       }
     }
+  }
 `;
 
 export default function RelatedArticlesSlider({
@@ -34,12 +39,11 @@ export default function RelatedArticlesSlider({
   //       (TypeScript-Typ entfernen, der korrekte TypeScript-Typ
   //        für 'articles' soll aus useSuspenseQuery abgeleitet werden)
 
-  const articles: Array<{
-    title: string;
-    id: string;
-    likes: number;
-    image?: { uri: string; altText: string };
-  }> = [];
+  const { data } = useSuspenseQuery(RelatedArticlesDocument, {
+    variables: { articleId },
+  });
+
+  const articles = data.relatedArticles;
 
   const [currentArticle, setCurrentArticle] = useState(0);
 

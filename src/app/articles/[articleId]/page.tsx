@@ -9,6 +9,7 @@ import { GlobalLoadingIndicator } from "@/components/GlobalLoadingIndicator";
 import { SidebarBox } from "@/components/SidebarBox";
 import CommentList from "@/components/articlepage/CommentList";
 import { cacheTag, revalidateTag } from "next/cache";
+import RelatedArticlesSlider from "@/components/articlepage/RelatedArticlesSlider";
 
 type Props = {
   params: Promise<{ articleId: string }>;
@@ -54,6 +55,9 @@ async function ArticlePageContent({ params }: Props) {
       <TwoColumnLayout
         sidebar={
           <>
+            <SidebarBox title={"Read more"}>
+              <RelatedArticlesSlider articleId={articleId} />
+            </SidebarBox>
             <SidebarBox title={"Comments"}>
               <CommentList articleId={articleId} />
             </SidebarBox>
