@@ -35,7 +35,7 @@ export default async function ArticleListPage() {
     throw new Error("Konnte Daten nicht laden.");
   }
 
-  // ...
+  // ... ........ ...
 
   return (
     <div className={"ArticleListPage"}>
