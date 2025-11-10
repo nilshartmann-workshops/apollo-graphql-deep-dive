@@ -2,6 +2,8 @@
 
 import LikeIcon from "@/components/LikeIcon";
 import { LikeIndicator } from "@/components/LoadingIndicator";
+import { useTransition } from "react";
+import saveLikeServerAction from "@/components/likes-action";
 
 type LikesWidgetProps = {
   articleId: string;
@@ -9,8 +11,18 @@ type LikesWidgetProps = {
 };
 
 export function LikesWidget({ articleId, currentLikes }: LikesWidgetProps) {
-  const isPending = false; // <-- replace with pending status from transition
+  // const isPending = false; // <-- replace with pending status from transition
+  const [isPending, startTransition] = useTransition();
+
   const handleSubmit = () => {
+    startTransition(async () => {
+      await saveLikeServerAction(articleId);
+
+      // 🕵️‍♂️ Das funktioniert hier auch ohne JS auf dem CLIENT!!!
+
+      // ⚠️ hier müsste man jetzt noch den Client-Cache aktualisieren
+    });
+
     // todo:
     //   - create new file 'likes-action.ts' and create your server action
     //      that runs the mutation
