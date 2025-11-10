@@ -3,39 +3,49 @@ import Link from "next/link";
 import { formatDate } from "@/components/format-date";
 import { H1 } from "@/components/Heading";
 import { LikesWidget } from "@/components/LikesWidget";
-import { G_ArticleImageFragment } from "@/_generated-graphql-types";
+import {
+  G_ArticleCardFragment,
+  G_ArticleImageFragment,
+} from "@/_generated-graphql-types";
 import gql from "graphql-tag";
+import { TypedDocumentNode } from "@graphql-typed-document-node/core";
+import { getApolloRscClient } from "@/graphql-client";
 
-// const ARTICLE_CARD_FRAGMENT = gql`
-//   fragment ArticleImageFragment on Image {
-//     uri
-//     altText
-//   }
-//
-//   fragment ArticleCardFragment on Article {
-//     id
-//     title
-//     excerpt(maxLength: 150)
-//     date
-//     category
-//     likes
-//     image {
-//       ...ArticleImageFragment
-//     }
-//   }
-// `;
+const ARTICLE_CARD_IMAGE_FRAGMENT = gql`
+  fragment ArticleImageFragment on Image {
+    uri
+    altText
+  }
+`;
+export const ARTICLE_CARD_FRAGMENT: TypedDocumentNode<G_ArticleCardFragment> = gql`
+  ${ARTICLE_CARD_IMAGE_FRAGMENT}
+  fragment ArticleCardFragment on Article {
+    id
+    title
+    excerpt(maxLength: 150)
+    date
+    category
+    likes
+    image {
+      ...ArticleImageFragment
+    }
+  }
+`;
 type ArticleCardProps = {
-  article: {
-    id: string;
-    title: string;
-    excerpt: string;
-    date: string;
-    category: string;
-    likes: number;
-    image?: G_ArticleImageFragment;
-  };
+  // article: G_ArticleCardFragment;
+  articleId: string;
 };
-export default function ArticleCard({ article }: ArticleCardProps) {
+export default function ArticleCard({ articleId }: ArticleCardProps) {
+  const article = getApolloRscClient().readFragment({
+    id: `Article:${articleId}`,
+    fragment: ARTICLE_CARD_FRAGMENT,
+    fragmentName: "ArticleCardFragment", // <- nicht typsicher, ausprobieren: ArticleImageFragment
+  });
+
+  if (!article) {
+    throw new Error(":-(");
+  }
+
   return (
     <div
       className={

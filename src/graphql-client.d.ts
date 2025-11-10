@@ -16,6 +16,8 @@ export const { query: graphlQuery, getClient: getApolloRscClient } =
   registerApolloClient(() => {
     console.log("Registering Apollo Client");
     return new ApolloClient({
+      // https://www.apollographql.com/docs/react/data/fragments#enabling-data-masking
+      dataMasking: true,
       cache: new InMemoryCache(),
       link: createSlowdownLink("RSC").concat(httpLink),
     });
