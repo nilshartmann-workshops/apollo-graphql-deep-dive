@@ -13,7 +13,7 @@ type RelatedArticlesSliderProps = {
 // todo: complete query and re-run code-generator
 const RELATED_ARTICLES_QUERY = gql`
   query RelatedArticles($articleId: ID!) {
-    relatedArticles(articleId: $articleId) {
+    relatedArticles(articleId: $articleId, includeSelf: true) {
       title
       id
       likes

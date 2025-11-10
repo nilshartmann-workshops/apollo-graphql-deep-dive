@@ -4,6 +4,7 @@ import LikeIcon from "@/components/LikeIcon";
 import { LikeIndicator } from "@/components/LoadingIndicator";
 import { useTransition } from "react";
 import saveLikeServerAction from "@/components/likes-action";
+import { useApolloClient } from "@apollo/client/react";
 
 type LikesWidgetProps = {
   articleId: string;
@@ -13,6 +14,7 @@ type LikesWidgetProps = {
 export function LikesWidget({ articleId, currentLikes }: LikesWidgetProps) {
   // const isPending = false; // <-- replace with pending status from transition
   const [isPending, startTransition] = useTransition();
+  const client = useApolloClient();
 
   const handleSubmit = () => {
     startTransition(async () => {
@@ -21,6 +23,13 @@ export function LikesWidget({ articleId, currentLikes }: LikesWidgetProps) {
       // 🕵️‍♂️ Das funktioniert hier auch ohne JS auf dem CLIENT!!!
 
       // ⚠️ hier müsste man jetzt noch den Client-Cache aktualisieren
+
+      await client.refetchQueries({
+        // Refetched alle "aktiven" Clients, könnte im richtigen Leben
+        //   zielgerichteter gemacht werden
+        //   -> Alternativ direkt im Cache aktualisieren
+        include: "active",
+      });
     });
 
     // todo:
