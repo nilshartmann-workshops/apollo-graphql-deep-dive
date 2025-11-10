@@ -10,6 +10,7 @@ import { SidebarBox } from "@/components/SidebarBox";
 import CommentList from "@/components/articlepage/CommentList";
 import { cacheTag, revalidateTag } from "next/cache";
 import RelatedArticlesSlider from "@/components/articlepage/RelatedArticlesSlider";
+import LoadingIndicator from "@/components/LoadingIndicator";
 
 type Props = {
   params: Promise<{ articleId: string }>;
@@ -56,7 +57,17 @@ async function ArticlePageContent({ params }: Props) {
         sidebar={
           <>
             <SidebarBox title={"Read more"}>
-              <RelatedArticlesSlider articleId={articleId} />
+              {/*
+              🕵️‍♂️ Zeigen:
+                - wann wird der Query ausgeführt
+                - wo wird der Query ausgeführt (SSR + Client-Seite)
+                  - ggf. fetchPolicy im Slider setzen
+                - Apollo DevTools im Browser
+
+              */}
+              <Suspense fallback={<LoadingIndicator />}>
+                <RelatedArticlesSlider articleId={articleId} />
+              </Suspense>
             </SidebarBox>
             <SidebarBox title={"Comments"}>
               <CommentList articleId={articleId} />

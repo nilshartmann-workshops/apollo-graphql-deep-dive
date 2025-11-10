@@ -41,6 +41,8 @@ export default function RelatedArticlesSlider({
 
   const { data } = useSuspenseQuery(RelatedArticlesDocument, {
     variables: { articleId },
+    // zum zeigen, dass der Query auch CLIENT-seitig ausgeführt wird:
+    fetchPolicy: "network-only",
   });
 
   const articles = data.relatedArticles;
