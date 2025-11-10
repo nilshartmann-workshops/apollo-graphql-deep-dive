@@ -14,6 +14,7 @@ const httpLink = new HttpLink({
 // https://github.com/apollographql/apollo-client-integrations/tree/main/packages/nextjs#in-rsc
 export const { query: graphlQuery, getClient: getApolloRscClient } =
   registerApolloClient(() => {
+    console.log("Registering Apollo Client");
     return new ApolloClient({
       cache: new InMemoryCache(),
       link: createSlowdownLink("RSC").concat(httpLink),
