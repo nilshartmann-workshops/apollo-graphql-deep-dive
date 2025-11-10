@@ -10,6 +10,7 @@ const ADD_LIKE_MUTATION = gql`
     addLike(input: { articleId: $articleId }) {
       ... on AddLikeSuccess {
         article {
+          id
           likes
         }
       }
@@ -40,4 +41,5 @@ export default async function saveLikeServerAction(articleId: string) {
   revalidatePath(`/articles/${articleId}`);
 
   // ...leider wird der Client-Cache hier nicht aktualisiert
+  return result.data.addLike.article;
 }

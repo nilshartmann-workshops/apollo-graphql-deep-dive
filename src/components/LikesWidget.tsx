@@ -18,18 +18,39 @@ export function LikesWidget({ articleId, currentLikes }: LikesWidgetProps) {
 
   const handleSubmit = () => {
     startTransition(async () => {
-      await saveLikeServerAction(articleId);
+      const updatedArticle = await saveLikeServerAction(articleId);
+
+      if (!updatedArticle) {
+        return;
+      }
 
       // 🕵️‍♂️ Das funktioniert hier auch ohne JS auf dem CLIENT!!!
 
       // ⚠️ hier müsste man jetzt noch den Client-Cache aktualisieren
 
-      await client.refetchQueries({
-        // Refetched alle "aktiven" Clients, könnte im richtigen Leben
-        //   zielgerichteter gemacht werden
-        //   -> Alternativ direkt im Cache aktualisieren
-        include: "active",
+      //  Beispiel 2: Cache direkt modifizieren
+      client.cache.modify({
+        id: client.cache.identify(updatedArticle),
+        fields: {
+          likes(cachedLikes) {
+            console.log(
+              "Updating existing likes",
+              cachedLikes,
+              "to",
+              updatedArticle.likes,
+            );
+            return updatedArticle.likes;
+          },
+        },
+        broadcast: true,
       });
+
+      // await client.refetchQueries({
+      //   // Refetched alle "aktiven" Clients, könnte im richtigen Leben
+      //   //   zielgerichteter gemacht werden
+      //   //   -> Alternativ direkt im Cache aktualisieren
+      //   include: "active",
+      // });
     });
 
     // todo:
