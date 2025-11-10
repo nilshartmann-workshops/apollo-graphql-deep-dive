@@ -15,8 +15,9 @@ const httpLink = new HttpLink({
 export const { query: graphlQuery, getClient: getApolloRscClient } =
   registerApolloClient(() => {
     console.log("Registering Apollo Client");
-    return new ApolloClient({
+    const ac = new ApolloClient({
       cache: new InMemoryCache(),
       link: createSlowdownLink("RSC").concat(httpLink),
     });
+    return ac;
   });
