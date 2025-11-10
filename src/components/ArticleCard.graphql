@@ -1,0 +1,16 @@
+fragment ArticleImageFragment on Image {
+  uri
+  altText
+}
+
+fragment ArticleCardFragment on Article {
+  id
+  title
+  excerpt(maxLength: 150)
+  date
+  category
+  likes
+  image {
+    ...ArticleImageFragment
+  }
+}

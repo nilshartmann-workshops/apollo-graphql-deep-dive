@@ -3,7 +3,27 @@ import Link from "next/link";
 import { formatDate } from "@/components/format-date";
 import { H1 } from "@/components/Heading";
 import { LikesWidget } from "@/components/LikesWidget";
+import { G_ArticleImageFragment } from "@/_generated-graphql-types";
+import gql from "graphql-tag";
 
+// const ARTICLE_CARD_FRAGMENT = gql`
+//   fragment ArticleImageFragment on Image {
+//     uri
+//     altText
+//   }
+//
+//   fragment ArticleCardFragment on Article {
+//     id
+//     title
+//     excerpt(maxLength: 150)
+//     date
+//     category
+//     likes
+//     image {
+//       ...ArticleImageFragment
+//     }
+//   }
+// `;
 type ArticleCardProps = {
   article: {
     id: string;
@@ -12,7 +32,7 @@ type ArticleCardProps = {
     date: string;
     category: string;
     likes: number;
-    image?: { uri: string; altText: string };
+    image?: G_ArticleImageFragment;
   };
 };
 export default function ArticleCard({ article }: ArticleCardProps) {
@@ -68,7 +88,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
 }
 
 type ArticleCardImageProps = {
-  image?: { uri: string; altText: string };
+  image?: G_ArticleImageFragment;
 };
 function ArticleCardImage({ image }: ArticleCardImageProps) {
   if (!image) {

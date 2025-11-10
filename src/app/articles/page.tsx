@@ -10,16 +10,7 @@ const ARTICLE_LIST_QUERY = gql`
       totalPages
 
       articles: results {
-        id
-        title
-        excerpt(maxLength: 150)
-        date
-        category
-        likes
-        image {
-          uri
-          altText
-        }
+        ...ArticleCardFragment
       }
     }
   }
