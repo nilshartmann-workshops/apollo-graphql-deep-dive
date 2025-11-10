@@ -11,6 +11,14 @@ const httpLink = new HttpLink({
   uri: "http://localhost:20080/graphql",
 });
 
+// Schritt 1:
+//  - Workspace zeigen:
+//    - Diese Datei
+//    - Code-Generator
+//  - IntelliJ Tooling
+//  - erklären, was "query" und "getClient" ist
+//  - Ausblick: diese Konfiguration ist nur für RSC (SSR+Client-Komponenten später)
+
 // https://github.com/apollographql/apollo-client-integrations/tree/main/packages/nextjs#in-rsc
 export const { query: graphlQuery, getClient: getApolloRscClient } =
   registerApolloClient(() => {
